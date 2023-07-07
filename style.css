@@ -1,0 +1,243 @@
+:root {
+    font-family: Arial, sans-serif;
+
+    --background-img: url("/assets/ParisRoom - Day.png");
+    --windows-glass: hsla(0, 0%, 50%, 0.3);
+    --light-direction: 175deg;
+    --specular: linear-gradient(var(--light-direction, 175deg), rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.01) 40%, rgba(255, 255, 255, 0.01) 60%, rgba(255, 255, 255, 0.1) 100%);
+    --text-secondary: rgba(255, 255, 255, 0.23);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-img: url("/assets/ParisRoom - Night.png");
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    position: relative;
+}
+button::after {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    min-width: 60px;
+    min-height: 60px;
+    background: rgba(128, 0, 0, 0.30);
+    cursor: pointer;
+    border-radius: inherit;
+  }
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+.debug {
+    outline: solid 0.5px lime;
+}
+
+
+body {
+    height: 100vh;
+    background: var(--background-img) no-repeat center center fixed;
+    background-size: cover;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-weight: bold;
+}
+
+
+
+.glass {
+    --_border-width: 2px;
+    --_border-radius: 40px;
+    border: solid var(--_border-width) rgba(255, 255, 255, 0.30);
+    border-radius: var(--_border-radius);
+
+    background: var(--windows-glass, rgba(128, 128, 128, 0.30));
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(50px);
+}
+
+/* .glass::after {
+    content: "";
+    display: absolute;
+    position: absolute;
+    inset: calc(-1 * var(--_border-width));
+
+    border-radius: calc(var(--_border-width) + var(--_border-radius));
+
+    background: var(--specular);
+    background-blend-mode: luminosity;
+}
+*/
+
+
+
+.window {
+    flex: 1 1;
+    max-height: 100vh;
+    
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+}
+
+/* MAIN */
+
+.window main {
+    flex: 0 1 1200px;
+    aspect-ratio: 16/9;
+    position: relative;
+}
+
+.window main:has(.ornament.detached.start, .ornament.detached.end) {
+    margin-inline: 150px;
+}
+
+.window main:has(.ornament.detached.top, .ornament.detached.bottom) {
+    margin-block: 150px;
+}
+
+.window main:has(.ornament.start, .ornament.end) {
+    margin-inline: 60px;
+}
+
+.window main:has(.ornament.top, .ornament.bottom) {
+    margin-block: 60px;
+}
+
+
+
+
+
+/* Ornaments */
+
+.ornament {
+    --_min-dimension: 68px;
+    --_atached-offset: 48px;
+    --_detached-offset: calc(var(--_atached-offset) + var(--_min-dimension));
+    position: absolute;
+
+    display: flex;
+
+    transition: all .2s ease-in-out;
+}
+
+.ornament.top,
+.ornament.bottom {
+    min-height: 68px;
+    flex-direction: row;
+}
+
+.ornament.start,
+.ornament.end {
+    min-width: 68px;
+    flex-direction: column;
+}
+
+.ornament.atached {
+    &.top {
+        inset-block-start: calc(-1 * var(--_atached-offset));
+    }
+
+    &.bottom {
+        inset-block-end: calc(-1 * var(--_atached-offset));
+    }
+
+    &.start {
+        inset-inline-start: calc(-1 * var(--_atached-offset));
+    }
+
+    &.end {
+        inset-inline-end: calc(-1 * var(--_atached-offset));
+    }
+}
+
+.ornament.detached {
+    &.top {
+        inset-block-start: calc(-1 * var(--_detached-offset));
+    }
+
+    &.bottom {
+        inset-block-end: calc(-1 * var(--_detached-offset));
+    }
+
+    &.start {
+        inset-inline-start: calc(-1 * var(--_detached-offset));
+    }
+
+    &.end {
+        inset-inline-end: calc(-1 * var(--_detached-offset));
+    }
+}
+
+
+
+.ornament:hover {
+    transform: scale(102%);
+
+    &.bottom {
+        transform-origin: top center;
+    }
+
+    &.start {
+        transform-origin: center right;
+    }
+
+    &.top {
+        transform-origin: bottom center;
+    }
+
+    &.end {
+        transform-origin: center left;
+    }
+
+}
+
+.borderless {
+    background: none;
+    border: none;
+}
+
+/* 
+Look at: 
+https://www.youtube.com/watch?v=TskEjH6VkSM 
+
+The main window should have a constant margin, that can accomodate all possible ornaments.
+
+Add specific "ornament containers"? 
+*/
