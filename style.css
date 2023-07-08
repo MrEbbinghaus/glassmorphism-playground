@@ -1,7 +1,7 @@
 :root {
     font-family: SF Pro, Helvetica Neue Interface, Arial, sans-serif;
 
-    --background-img: url("/assets/ParisRoom - Day.png");
+    --background-img: url("./assets/ParisRoom - Day.png");
     --windows-glass: hsla(0, 0%, 50%, 0.3);
     --light-direction: 175deg;
     --specular: linear-gradient(var(--light-direction, 175deg), rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.01) 40%, rgba(255, 255, 255, 0.01) 60%, rgba(255, 255, 255, 0.1) 100%);
@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background-img: url("/assets/ParisRoom - Night.png");
+        --background-img: url("./assets/ParisRoom - Night.png");
     }
 }
 
