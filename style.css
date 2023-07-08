@@ -1,11 +1,15 @@
 :root {
-    font-family: Arial, sans-serif;
+    font-family: SF Pro, Helvetica Neue Interface, Arial, sans-serif;
 
     --background-img: url("/assets/ParisRoom - Day.png");
     --windows-glass: hsla(0, 0%, 50%, 0.3);
     --light-direction: 175deg;
     --specular: linear-gradient(var(--light-direction, 175deg), rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.01) 40%, rgba(255, 255, 255, 0.01) 60%, rgba(255, 255, 255, 0.1) 100%);
-    --text-secondary: rgba(255, 255, 255, 0.23);
+
+    --colors-black: #000;
+    --clr-text-primary: rgba(255, 255, 255, 0.96);
+    --clr-text-secondary: rgba(255, 255, 255, 0.23);
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,17 +43,34 @@ select {
 
 button {
     position: relative;
+    min-width: 24px;
+    min-height: 24px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 590;
+    line-height: 24px;
 }
+
+button:hover {
+    background: var(--windows-glass, rgba(128, 128, 128, 0.30));
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(50px);
+}
+
 button::after {
     content: "";
     position: absolute;
     inset: 0px;
     min-width: 60px;
     min-height: 60px;
-    background: rgba(128, 0, 0, 0.30);
+    background: rgba(128, 0, 0, 0);
     cursor: pointer;
     border-radius: inherit;
-  }
+}
 
 img,
 picture,
@@ -62,6 +83,14 @@ svg {
 
 .debug {
     outline: solid 0.5px lime;
+}
+
+.title1 {
+    color: var(--clr-text-primary);
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
 }
 
 
@@ -89,6 +118,8 @@ body {
     background: var(--windows-glass, rgba(128, 128, 128, 0.30));
     background-blend-mode: luminosity;
     backdrop-filter: blur(50px);
+
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.10);
 }
 
 /* .glass::after {
@@ -105,139 +136,89 @@ body {
 */
 
 
-
-.window {
-    flex: 1 1;
-    max-height: 100vh;
-    
-    position: relative;
-
-    display: flex;
-    justify-content: center;
-}
-
-/* MAIN */
-
-.window main {
-    flex: 0 1 1200px;
-    aspect-ratio: 16/9;
-    position: relative;
-}
-
-.window main:has(.ornament.detached.start, .ornament.detached.end) {
-    margin-inline: 150px;
-}
-
-.window main:has(.ornament.detached.top, .ornament.detached.bottom) {
-    margin-block: 150px;
-}
-
-.window main:has(.ornament.start, .ornament.end) {
-    margin-inline: 60px;
-}
-
-.window main:has(.ornament.top, .ornament.bottom) {
-    margin-block: 60px;
-}
-
-
-
-
-
-/* Ornaments */
-
-.ornament {
-    --_min-dimension: 68px;
-    --_atached-offset: 48px;
-    --_detached-offset: calc(var(--_atached-offset) + var(--_min-dimension));
-    position: absolute;
-
-    display: flex;
-
-    transition: all .2s ease-in-out;
-}
-
-.ornament.top,
-.ornament.bottom {
-    min-height: 68px;
-    flex-direction: row;
-}
-
-.ornament.start,
-.ornament.end {
-    min-width: 68px;
-    flex-direction: column;
-}
-
-.ornament.atached {
-    &.top {
-        inset-block-start: calc(-1 * var(--_atached-offset));
-    }
-
-    &.bottom {
-        inset-block-end: calc(-1 * var(--_atached-offset));
-    }
-
-    &.start {
-        inset-inline-start: calc(-1 * var(--_atached-offset));
-    }
-
-    &.end {
-        inset-inline-end: calc(-1 * var(--_atached-offset));
-    }
-}
-
-.ornament.detached {
-    &.top {
-        inset-block-start: calc(-1 * var(--_detached-offset));
-    }
-
-    &.bottom {
-        inset-block-end: calc(-1 * var(--_detached-offset));
-    }
-
-    &.start {
-        inset-inline-start: calc(-1 * var(--_detached-offset));
-    }
-
-    &.end {
-        inset-inline-end: calc(-1 * var(--_detached-offset));
-    }
-}
-
-
-
-.ornament:hover {
-    transform: scale(102%);
-
-    &.bottom {
-        transform-origin: top center;
-    }
-
-    &.start {
-        transform-origin: center right;
-    }
-
-    &.top {
-        transform-origin: bottom center;
-    }
-
-    &.end {
-        transform-origin: center left;
-    }
-
-}
-
 .borderless {
     background: none;
     border: none;
 }
 
-/* 
-Look at: 
-https://www.youtube.com/watch?v=TskEjH6VkSM 
 
-The main window should have a constant margin, that can accomodate all possible ornaments.
+section,
+.window {
+    --ornament-gap: 36px;
+    --ornament-overlap: 20px;
 
-Add specific "ornament containers"? 
-*/
+    display: grid;
+    place-items: center;
+
+
+    grid-template-columns: 1fr minmax(auto, 50rem) 1fr;
+    grid-template-rows: 1fr minmax(auto, 29rem) 1fr;
+    grid-template-areas:
+        ".              ornament-top          ."
+        "ornament-start   content    ornament-end"
+        ".            ornament-bottom         .";
+
+    gap: var(--ornament-gap);
+
+    /* The main window is 3m from us ... */
+    perspective: 300cm;
+
+}
+
+.ornament {
+    transition: all .2s ease-in-out;
+
+    &:hover {
+        transform: translateZ(2cm);
+    }
+
+    &:active {
+        transform: translateZ(-2cm);
+    }
+}
+
+main,
+.content {
+    width: 100%;
+    height: 100%;
+    grid-area: content;
+
+    padding: 24px;
+}
+
+.ornament-start {
+    grid-area: ornament-start;
+
+    &.atached {
+        margin-inline-end: calc(-1 * (var(--ornament-overlap) + var(--ornament-gap)));
+    }
+}
+
+.ornament-top {
+    grid-area: ornament-top;
+
+    &.atached {
+        margin-block-end: calc(-1 * (var(--ornament-overlap) + var(--ornament-gap)));
+    }
+}
+
+.ornament-end {
+    grid-area: ornament-end;
+
+    &.atached {
+        margin-inline-start: calc(-1 * (var(--ornament-overlap) + var(--ornament-gap)));
+    }
+}
+
+.ornament-bottom {
+    grid-area: ornament-bottom;
+
+    &.atached {
+        margin-block-start: calc(-1 * (var(--ornament-overlap) + var(--ornament-gap)));
+    }
+}
+
+.controlbar>button {
+    height: 60px;
+    border-radius: 60px;
+}
